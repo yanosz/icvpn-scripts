@@ -108,8 +108,7 @@ def create_config(srcdir, exclude, prefix, defaulttemplate, templates, family,
 
     print(formatter.finalize())
 
-
-if __name__ == "__main__":
+def main(): 
     formatters = {
         "bird": BirdFormatter,
         "quagga": QuaggaFormatter,
@@ -162,3 +161,6 @@ if __name__ == "__main__":
                   options.defaulttemplate, options.templates,
                   options.family, formatters[options.fmt],
                   options.passive_offline)
+
+if __name__ == "__main__":
+    main()    
