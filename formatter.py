@@ -23,7 +23,7 @@ class Formatter(object):
         """
         self.config.append("# " + "\n# ".join(comment.split("\n")))
 
-    def add_data(self, asn, name, template, peer):
+    def add_data(self, asn, name, template, peer,interface):
         """
         Add config directives so that every domain in domains is forwarded to
         every server in servers.

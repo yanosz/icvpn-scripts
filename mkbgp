@@ -12,7 +12,7 @@ from multiprocessing.dummy import Pool
 
 class BirdFormatter(Formatter):
     "Formatter for bind9 using type forward"
-    def add_data(self, asn, name, template, peer, passive=False):
+    def add_data(self, asn, name, template, peer, interface, passive=False):
         self.config.append(dedent("""
             protocol bgp {name} from {template} {{
                 neighbor {peer} as {asn};""".format(
@@ -28,7 +28,7 @@ class QuaggaFormatter(Formatter):
     def add_comment(self, comment):
         self.config.append("! " + "\n! ".join(comment.split("\n")))
 
-    def add_data(self, asn, name, template, peer, passive=False):
+    def add_data(self, asn, name, template, peer, interface, passive=False):
         self.config.append(dedent("""
             neighbor {peer} remote-as {asn}
             neighbor {peer} description {name}
@@ -55,7 +55,7 @@ def is_reachable(host, port, timeout):
 
 
 def create_config(srcdir, exclude, prefix, defaulttemplate, templates, family,
-                  fmtclass, timeout):
+                  fmtclass, timeout,interface):
     """
     Generates a configuration using all files in srcdir
     (non-recursively) excluding communities from 'exclude'.
@@ -153,14 +153,21 @@ def main():
                             "communities",
                       metavar="COMMUNITY:TEMPLATE",
                       default=[])
+    parser.add_option("-I", "--interface", dest="interface",
+                      help="""Interface used for link local addresses. Default: icvpn""", metavar="INTERFACE",
+                      default="icvpn")
+
+
+
     parser.set_defaults(family="ipv6")
 
+    print(parser.parse_args())
     (options, args) = parser.parse_args()
 
     create_config(options.src, set(options.exclude), options.prefix,
                   options.defaulttemplate, options.templates,
                   options.family, formatters[options.fmt],
-                  options.passive_offline)
+                  options.passive_offliney,options.interface)
 
 if __name__ == "__main__":
     main()    
